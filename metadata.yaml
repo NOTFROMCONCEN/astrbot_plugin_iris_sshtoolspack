@@ -1,0 +1,7 @@
+name: astrbot_plugin_iris_sshtoolspack
+author: NOTFROMCONCEN
+desc: 在 IM 入口透传 SSH 命令到指定服务器执行
+version: 1.0.1-beta
+repo: https://github.com/NOTFROMCONCEN/astrbot_plugin_iris_sshtoolspack
+display_name: Iris SSH 工具包
+astrbot_version: ">=4.16,<5"

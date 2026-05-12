@@ -1,0 +1,85 @@
+{
+  "enabled": {
+    "description": "是否启用 Iris SSH 工具包",
+    "type": "bool",
+    "default": true
+  },
+  "ssh_profile_name": {
+    "description": "SSH 连接配置名称，用于 /ssh_exec <profile> <command>",
+    "type": "string",
+    "default": "default"
+  },
+  "ssh_host": {
+    "description": "SSH 服务器地址",
+    "type": "string",
+    "default": ""
+  },
+  "ssh_port": {
+    "description": "SSH 端口",
+    "type": "int",
+    "default": 22
+  },
+  "ssh_username": {
+    "description": "SSH 用户名",
+    "type": "string",
+    "default": ""
+  },
+  "ssh_password": {
+    "description": "SSH 密码（使用私钥时可留空）",
+    "type": "string",
+    "default": ""
+  },
+  "ssh_private_key_path": {
+    "description": "SSH 私钥路径（使用密码登录时可留空）",
+    "type": "string",
+    "default": ""
+  },
+  "ssh_private_key_passphrase": {
+    "description": "SSH 私钥密码（没有则留空）",
+    "type": "string",
+    "default": ""
+  },
+  "connect_timeout_sec": {
+    "description": "SSH 连接超时（秒）",
+    "type": "int",
+    "default": 10
+  },
+  "command_timeout_sec": {
+    "description": "SSH 命令执行超时（秒）",
+    "type": "int",
+    "default": 30
+  },
+  "max_output_chars": {
+    "description": "单次返回最大字符数，超出时截断",
+    "type": "int",
+    "default": 3500
+  },
+  "allow_unknown_host": {
+    "description": "是否自动信任首次连接的 SSH Host Key",
+    "type": "bool",
+    "default": true
+  },
+  "admin_user_ids": {
+    "description": "允许执行 SSH 命令的用户 ID 列表",
+    "type": "list",
+    "items": {
+      "type": "string"
+    },
+    "default": []
+  },
+  "allow_astrbot_admin": {
+    "description": "是否允许 AstrBot 管理员执行 SSH 命令",
+    "type": "bool",
+    "default": true
+  },
+  "verbose_log": {
+    "description": "是否输出详细日志",
+    "type": "bool",
+    "default": false
+  },
+  "max_log_line_length": {
+    "description": "单条日志最大长度，超出时截断",
+    "type": "int",
+    "default": 512
+  }
+}
