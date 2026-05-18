@@ -81,5 +81,30 @@
     "description": "单条日志最大长度，超出时截断",
     "type": "int",
     "default": 512
+  },
+  "audit_mode": {
+    "description": "审计模式: memory(内存) / file(文件轮转) / sqlite(本地数据库)",
+    "type": "string",
+    "default": "memory"
+  },
+  "audit_dir": {
+    "description": "file/sqlite 审计存储目录（留空使用插件数据目录）",
+    "type": "string",
+    "default": ""
+  },
+  "interactive_confirm": {
+    "description": "危险命令是否需要管理员二次确认（true=交互确认，false=直接拒绝）",
+    "type": "bool",
+    "default": false
+  },
+  "interactive_confirm_timeout_sec": {
+    "description": "二次确认超时时间（秒），超时后自动拒绝",
+    "type": "int",
+    "default": 60
+  },
+  "key_rotate_warn_days": {
+    "description": "私钥使用超过多少天时提示轮换（0=关闭提示）",
+    "type": "int",
+    "default": 90
   }
 }
