@@ -77,6 +77,10 @@ class IrisSshToolsPackPlugin(Star):
         self._commands_blocked = 0
         self._last_error = ""
         self._max_log_line_length = self._int_conf("max_log_line_length", 512)
+        self._allow_patterns_sig = ""
+        self._deny_patterns_sig = ""
+        self._allow_patterns_compiled: list[re.Pattern[str]] = []
+        self._deny_patterns_compiled: list[re.Pattern[str]] = []
 
         audit_mode = self._norm(self.config.get("audit_mode", "memory"))
         audit_dir_raw = self._norm(self.config.get("audit_dir", ""))
@@ -475,21 +479,45 @@ class IrisSshToolsPackPlugin(Star):
         """返回 (allowed, reason)。"""
         allow_patterns = self._command_allow_patterns()
         deny_patterns = self._command_deny_patterns()
+        allow_compiled, deny_compiled = self._compiled_policy_patterns(allow_patterns, deny_patterns)
         preview = command.strip()
 
         # 黑名单优先
-        for pat in deny_patterns:
-            if re.search(pat, preview):
+        for idx, regex in enumerate(deny_compiled):
+            if regex.search(preview):
+                pat = deny_patterns[idx] if idx < len(deny_patterns) else regex.pattern
                 return False, f"命中黑名单正则: {pat}"
 
         if not allow_patterns:
             # 未配置白名单则全部放行（除黑名单外）
             return True, ""
 
-        for pat in allow_patterns:
-            if re.search(pat, preview):
+        for regex in allow_compiled:
+            if regex.search(preview):
                 return True, ""
         return False, "未命中命令白名单"
+
+    def _compiled_policy_patterns(
+        self, allow_patterns: list[str], deny_patterns: list[str]
+    ) -> tuple[list[re.Pattern[str]], list[re.Pattern[str]]]:
+        allow_sig = "|".join(allow_patterns)
+        deny_sig = "|".join(deny_patterns)
+        if allow_sig != self._allow_patterns_sig:
+            self._allow_patterns_sig = allow_sig
+            self._allow_patterns_compiled = self._compile_patterns(allow_patterns, "allow")
+        if deny_sig != self._deny_patterns_sig:
+            self._deny_patterns_sig = deny_sig
+            self._deny_patterns_compiled = self._compile_patterns(deny_patterns, "deny")
+        return self._allow_patterns_compiled, self._deny_patterns_compiled
+
+    def _compile_patterns(self, patterns: list[str], mode: str) -> list[re.Pattern[str]]:
+        compiled: list[re.Pattern[str]] = []
+        for pat in patterns:
+            try:
+                compiled.append(re.compile(pat))
+            except re.error as e:
+                logger.warning(f"[iris_sshtoolspack] ignore invalid {mode} regex '{pat}': {e}")
+        return compiled
 
     def _command_allow_patterns(self) -> list[str]:
         raw = self.config.get("command_allow_patterns", [])
@@ -750,3 +778,4 @@ class IrisSshToolsPackPlugin(Star):
 
     async def terminate(self):
         logger.info("[iris_sshtoolspack] terminated")
+
