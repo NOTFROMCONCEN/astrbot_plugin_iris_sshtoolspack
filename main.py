@@ -61,7 +61,7 @@ class AuditRecord:
     "astrbot_plugin_iris_sshtoolspack",
     "NOTFROMCONCEN",
     "在 IM 入口透传 SSH 命令到指定服务器执行",
-    "1.1.0",
+    "2.2.2",
 )
 class IrisSshToolsPackPlugin(Star):
     def __init__(self, context: Context, config: dict[str, Any] | None = None):
@@ -778,4 +778,5 @@ class IrisSshToolsPackPlugin(Star):
 
     async def terminate(self):
         logger.info("[iris_sshtoolspack] terminated")
+
 
